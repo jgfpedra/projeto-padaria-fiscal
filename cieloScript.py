@@ -12,7 +12,7 @@ sh = book.sheet_by_index(0)
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-dicionario = []
+valoresComDias = []
 diaFeriados = []
 
 somaValor = 0 
@@ -46,7 +46,7 @@ for rownum in reversed(range(5, sh.nrows)):
 
     if(diasTotais == 5):
         somaValor += (locale.atof(sh.cell(rownum, 7).value.strip("R$"))/100)
-        dicionario.append([sh.cell(rownum, 1).value, sh.cell(rownum, 3).value, sh.cell(rownum, 4).value, sh.cell(rownum, 11).value, somaValor])
+        valoresComDias.append([sh.cell(rownum, 1).value, sh.cell(rownum, 3).value, sh.cell(rownum, 4).value, sh.cell(rownum, 11).value, somaValor])
 
-df = pd.DataFrame(data=dicionario)
+df = pd.DataFrame(data=valoresComDias)
 df.to_excel('resumo.xlsx')
