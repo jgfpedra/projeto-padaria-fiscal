@@ -27,22 +27,14 @@ for rownum in reversed(range(5, sh.nrows)):
 
     diferencaDias = (abs((d2 - d1).days))
 
+    if(d1.day > prev):
+        prev = d1.day
+        somaValor = 0
+
     if((diferencaDias < 8) 
        & (tipoVenda in tiposVenda)
        & (bandeira in bandeiras)):
-
-        if(d1.day > prev):
-            prev = d1.day
-            valoresComDias.append([sh.cell(rownum, 1).value, sh.cell(rownum, 3).value, tiposVenda[0], sh.cell(rownum, 11).value, temp[0]])
-            if(temp[1] != 0):
-                valoresComDias.append([sh.cell(rownum, 1).value, sh.cell(rownum, 3).value, tiposVenda[1], sh.cell(rownum, 11).value, temp[1]])
-            somaValor = 0
-            temp = [0, 0]
-
-        if(tipoVenda == tiposVenda[0]):
-            temp[0] += (locale.atof(sh.cell(rownum, 7).value.strip("R$"))/100)
-        elif(tipoVenda == tiposVenda[1]):
-            temp[1] += (locale.atof(sh.cell(rownum, 7).value.strip("R$"))/100)
+            valoresComDias.append([sh.cell(rownum, 1).value, sh.cell(rownum, 3).value, sh.cell(rownum, 4).value, sh.cell(rownum, 11).value, (locale.atof(sh.cell(rownum, 7).value.strip("R$"))/100)])
 
 df = pd.DataFrame(data=valoresComDias)
-df.to_excel('resumo.xlsx')
+df.to_excel('resumoA.xlsx')
