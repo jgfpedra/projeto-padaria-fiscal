@@ -1,25 +1,23 @@
-import xlrd
-from datetime import datetime
+from datetime import datetime, timedelta
 import locale
 import pandas as pd
 
-book = xlrd.open_workbook("venda.xls")
-sh = book.sheet_by_index(0)
+df = pd.read_excel("venda.xlsx", header=9)
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-dicionario = {}
+bandeiras = ["Visa", "Mastercard"]
+tiposVenda = ["Crédito à vista", "Crédito conversor moedas"]
 
-somaValor = 0 
+cols = [0, 1, 3, 4, 6, 11]
+valores = df[df.columns[cols]]
 
-for rownum in reversed(range(5, sh.nrows)):
-    d1 = datetime.strptime(sh.cell(rownum, 11).value, "%d/%m/%Y")
-    d2 = datetime.strptime(sh.cell(rownum, 1).value, "%d/%m/%Y")
-    if((abs((d1 - d2).days) == 5)):
-        somaValor += (locale.atof(sh.cell(rownum, 7).value.strip("R$"))/100)
-        dicionario[sh.cell(rownum, 1).value] = [sh.cell(rownum, 3).value, sh.cell(rownum, 11).value, somaValor]
+valores = valores[(valores['Bandeira'].isin(bandeiras)) &
+             (valores['Forma de pagamento'].isin(tiposVenda)) &
+             ((valores['Data prevista do pagamento'].apply(lambda x: datetime.strptime(x, "%d/%m/%Y")) -
+               valores['Data da venda'].apply(lambda x: datetime.strptime(x, "%d/%m/%Y"))).apply(lambda x: x.days) < 8)]
 
-df = pd.DataFrame(data=dicionario)
-df = (df.T)
-print(df)
+valores = valores.groupby(['Data da venda', 'Bandeira', 'Forma de pagamento', 'Data prevista do pagamento'])['Valor líquido'].sum()
+
+df = pd.DataFrame(data = valores)
 df.to_excel('resumo.xlsx')
