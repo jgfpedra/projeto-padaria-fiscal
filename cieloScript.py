@@ -9,7 +9,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 bandeiras = ["Visa", "Mastercard"]
 tiposVenda = ["Crédito à vista", "Crédito conversor moedas"]
 
-cols = [0, 1, 3, 4, 5, 11]
+cols = [0, 1, 3, 4, 6, 7, 14]
 valores = df[df.columns[cols]]
 
 valores = valores[(valores['Bandeira'].isin(bandeiras)) &
